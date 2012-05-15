@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>Java2Script loadClass Bug (2012-05-11)</title>
+<script type="text/javascript" src="j2slib/j2slib.z.js"></script>
+<style text="text/css">
+pre {
+	border: 1px solid #FE8;
+	background: #FFC;
+}
+</style>
+</head>
+<body>
+
+<h1 id="headline">Java2Script loadClass Bug (2012-05-11)</h1>
+<p>Demonstration of an issue with the class loading mechanism in Java2Script 2.0.0 v20100601 (Eclipse 3.6.*)</p>
+<p>Running this page's code script:</p>
+<pre>
+	ClazzLoader.packageClasspath ("java", "j2slib/", true);
+	ClazzLoader.setPrimaryFolder ("classes/");
+
+	ClazzLoader.loadClass ("org.abego.j2s.loadClassBug.Foo", function () {
+		// runs into TypeError because class "Bar" is not loaded
+		var foo = new org.abego.j2s.loadClassBug.Foo();
+	});
+</pre>
+results in the error:
+<pre>
+	TypeError: 'undefined' is not a constructor (evaluating 'new org.abego.j2s.loadClassBug.Bar ()')
+</pre>
+<em>(Run this page in a debugger to see the console log).</em>
+<script type="text/javascript">
+ClazzLoader.packageClasspath ("java", "j2slib/", true);
+ClazzLoader.setPrimaryFolder ("classes/");
+
+ClazzLoader.loadClass ("org.abego.j2s.loadClassBug.Foo", function () {
+	// runs into TypeError because class "Bar" is not loaded
+	var foo = new org.abego.j2s.loadClassBug.Foo();
+	
+	// when bug is fixed we say so...
+	document.getElementById("headline").appendChild(
+			document.createTextNode(" (Bug is fixed)"));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>Java2Script missingSuperFieldInitialization Bug (2012-05-15)</title>
+<script type="text/javascript" src="j2slib/j2slib.z.js"></script>
+<style text="text/css">
+pre, code {
+	border: 1px solid #FE8;
+	background: #FFC;
+}
+.error {
+	color: #F00;
+}
+</style>
+</head>
+<body>
+
+<h1 id="headline">Java2Script missingSuperFieldInitialization Bug (2012-05-15)</h1>
+<p>Demonstration of an issue with the inheritance mechanism in Java2Script 2.0.0 v20100601 (Eclipse 3.6.*)</p>
+<p>The class Foo initializes a field with an object:</p>
+<pre>
+public class Foo {
+	public Object field = new Object();
+	
+	public Foo() {
+	}
+}
+</pre>
+As expected running the following code will output "<code>foo.field initialized.</code>":
+<pre>
+Foo foo = new Foo();
+
+if (foo.field != null) {
+	System.out.println("foo.field initialized.");
+} else {
+	throw new RuntimeException("foo.field not initialized");
+}
+</pre>
+<p>The class Bar uses Foo as its base class:</p>
+<pre>
+public class Bar extends Foo {
+
+	public Bar(Object... args) {
+	}
+}
+</pre>
+Surprisingly the following code throws <code class="error">java.lang.RuntimeException: bar.field NOT initialized</code> when running in Java2Script emulation:
+<pre>
+Bar bar = new Bar();
+
+if (bar.field != null) {
+	System.out.println("bar.field initialized.");
+} else {
+	throw new RuntimeException("bar.field NOT initialized");
+}
+</pre>
+<em>(The same code executed as a "real" Java application outputs the expected "<code>bar.field initialized.</code>").</em>
+<p>It looks like the member field in base class Foo is not initialized when a derived object is created. Maybe this is related to the parameter of Bar's constructor (<code>Object... args</code>).</p>
+<em>(Run this page in a debugger to see the console log).</em>
+<script type="text/javascript">
+ClazzLoader.packageClasspath ("java", "j2slib/", true);
+ClazzLoader.setPrimaryFolder ("classes/");
+
+ClazzLoader.loadClass ("org.abego.missingSuperFieldInitializationBug.Bar", function () {
+	org.abego.missingSuperFieldInitializationBug.Bar.main();
+});
+</script>
+</body>
+</html>
