@@ -3,12 +3,10 @@
 
 	asyncTest("class access", function() {
 		ClazzLoader.loadClass(
-				"org.abego.j2stest.nativeobjectmode.ClassCommentsTest", function() {
+				"org.abego.j2stest.nativeobjectmode.ClassAsHashMapKeyTest", function() {
 					start();
 
-					var ClassCommentsTest = org.abego.j2stest.nativeobjectmode.ClassCommentsTest;
-
-					ok(ClassCommentsTest.runTest());
+					ok(org.abego.j2stest.nativeobjectmode.ClassAsHashMapKeyTest.runTest());
 				});
 	});
 })();
